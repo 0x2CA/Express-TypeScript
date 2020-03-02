@@ -3,6 +3,7 @@ import Express from "express"
 import Http from "http"
 import Https from "https"
 import Fs from "fs"
+import Path from "path"
 
 export default class Service implements IService {
     public express = Express();
@@ -10,11 +11,14 @@ export default class Service implements IService {
     public sslPort = 443443;
     public keyFile = "./Cert/Privatekey.pem"
     public certFile = "./Cert/Certificate.crt"
+    public staticFolder = "../../../public"
 
     /**
      * 初始化服务
      */
     public async initialize() {
+
+        this.initializeStatic();
         this.initializeHttp();
 
         // 访问路径
@@ -26,6 +30,7 @@ export default class Service implements IService {
             }
         });
     }
+
 
     /**
      * 初始化Http服务
@@ -46,5 +51,13 @@ export default class Service implements IService {
         }, this.express).listen(443, () => {
             console.log('HTTPS 服务运行在: https://localhost:%s', this.sslPort);
         });
+    }
+
+    /**
+    * 初始化静态资源
+    */
+    public async   initializeStatic() {
+        console.log("静态资源目录为:", Path.resolve(__dirname, this.staticFolder))
+        this.express.use(Express.static(Path.resolve(__dirname, this.staticFolder)))
     }
 }
