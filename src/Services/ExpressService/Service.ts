@@ -18,19 +18,9 @@ export default class Service implements IService {
      * 初始化服务
      */
     public async initialize() {
-
-        this.initializeStatic();
-        this.initializeRoutes();
-        this.initializeHttp();
-
-        // 访问路径
-        this.express.get('/:name', function (req, res) {
-            if (req.protocol === 'https') {
-                res.send('https:' + req.params.name);
-            } else {
-                res.send('http:' + req.params.name);
-            }
-        });
+        await this.initializeStatic();
+        await this.initializeRoutes();
+        await this.initializeHttp();
     }
 
 
