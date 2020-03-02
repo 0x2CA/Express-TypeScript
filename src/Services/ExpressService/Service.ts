@@ -8,12 +8,14 @@ export default class Service implements IService {
     public express = Express();
     public port = 8080;
     public sslPort = 443443;
+    public keyFile = "./Cert/Privatekey.pem"
+    public certFile = "./Cert/Certificate.crt"
 
     /**
-     * 开始运行服务
+     * 初始化服务
      */
-    public async start() {
-        this.startHttp();
+    public async initialize() {
+        this.initializeHttp();
 
         // 访问路径
         this.express.get('/:name', function (req, res) {
@@ -25,18 +27,24 @@ export default class Service implements IService {
         });
     }
 
-    public async startHttp() {
+    /**
+     * 初始化Http服务
+     */
+    public async initializeHttp() {
         Http.createServer(this.express).listen(this.port, () => {
-            console.log('HTTP Server is running on: http://localhost:%s', this.port);
+            console.log('HTTP 服务运行在: http://localhost:%s', this.port);
         });
     }
 
-    public async startHttps() {
+    /**
+     * 初始化Https服务
+     */
+    public async initializeHttps() {
         Https.createServer({
-            key: Fs.readFileSync('./Cert/Privatekey.pem', "utf8"),
-            cert: Fs.readFileSync('./Cert/Certificate.crt', "utf8")
+            key: Fs.readFileSync(this.keyFile, "utf8"),
+            cert: Fs.readFileSync(this.certFile, "utf8")
         }, this.express).listen(443, () => {
-            console.log('HTTPS Server is running on: https://localhost:%s', this.sslPort);
+            console.log('HTTPS 服务运行在: https://localhost:%s', this.sslPort);
         });
     }
 }

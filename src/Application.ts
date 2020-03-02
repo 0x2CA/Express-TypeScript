@@ -2,9 +2,9 @@ import ExpressService from "./Services/ExpressService/Service"
 
 export default class Application {
     public static main(argv: string[]) {
-        console.log(argv)
+        console.log("运行参数:", ...argv)
         const express: ExpressService = new ExpressService();
-        express.start();
+        express.initialize();
     }
 }
 
