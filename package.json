@@ -4,9 +4,10 @@
     "description": "",
     "main": "Application.ts",
     "dependencies": {
+        "@types/express": "^4.17.2",
         "@types/node": "^13.7.7",
         "express": "^4.17.1",
-        "@types/express": "^4.17.2"
+        "redis": "^3.0.2"
     },
     "devDependencies": {},
     "scripts": {
