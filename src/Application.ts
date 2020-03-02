@@ -1,7 +1,11 @@
+import ExpressService from "./Services/ExpressService/Service"
+
 export default class Application {
-    public static Main(argv: string[]) {
+    public static main(argv: string[]) {
         console.log(argv)
+        const express: ExpressService = new ExpressService();
+        express.start();
     }
 }
 
-Application.Main(process.argv)
+Application.main(process.argv)
