@@ -8,5 +8,4 @@ export default class RedisService implements IService {
 
     async  initialize() {
     }
-
 }

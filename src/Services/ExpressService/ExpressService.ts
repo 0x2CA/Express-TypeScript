@@ -58,7 +58,7 @@ export default class ExpressService implements IService {
       */
     public async   initializeRoutes() {
         console.log("路由目录为:", Path.resolve(__dirname, this.routesFolder))
-        const scanResult = this.scanDirModules(Path.resolve(__dirname, this.routesFolder));
+        const scanResult = this.scanDirRoutes(Path.resolve(__dirname, this.routesFolder));
         for (const prefix in scanResult) {
             if (scanResult.hasOwnProperty(prefix)) {
                 console.log("自动加载路由:", prefix);
@@ -71,7 +71,7 @@ export default class ExpressService implements IService {
      * 文件路径转路由路径
      * @param filename 
      */
-    private transform(filename: string) {
+    private filename2Route(filename: string) {
         return filename.slice(0, filename.lastIndexOf('.'))
             // 分隔符转换
             .replace(/\\/g, '/')
@@ -87,9 +87,9 @@ export default class ExpressService implements IService {
      * 扫描文件夹下的代码
      * @param rootDir 
      */
-    private scanDirModules(rootDir: string) {
+    private scanDirRoutes(rootDir: string) {
         // 模块集合
-        const modules: { [key: string]: any } = {}
+        const routes: { [key: string]: any } = {}
         // 获取目录下的第一级子文件为路由文件队列
         let filenames = Fs.readdirSync(rootDir)
         while (filenames.length) {
@@ -103,11 +103,11 @@ export default class ExpressService implements IService {
                 filenames = filenames.concat(subFiles)
             } else {
                 // 是文件的情况下，将文件路径转化为路由前缀，添加路由前缀和路由模块到模块集合中
-                const prefix = this.transform(relativeFilePath || "");
-                modules[prefix] = require(absFilePath).default
+                const prefix = this.filename2Route(relativeFilePath || "");
+                routes[prefix] = require(absFilePath).default
             }
         }
-        return modules
+        return routes
     }
 
 }
