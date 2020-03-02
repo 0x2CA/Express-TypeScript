@@ -5,7 +5,7 @@ import Https from "https"
 import Fs from "fs"
 import Path from "path"
 
-export default class Service implements IService {
+export default class ExpressService implements IService {
     public express = Express();
     public port = 8080;
     public sslPort = 443443;

@@ -1,4 +1,4 @@
-import ExpressService from "./Services/ExpressService/Service"
+import ExpressService from "./Services/ExpressService/ExpressService"
 
 class Application {
 
@@ -8,13 +8,13 @@ class Application {
     }
 
     private static async  initialize() {
-        await Application.Services.express.initialize();
+        await Application.Services.expressService.initialize();
     }
 }
 
 namespace Application {
     export namespace Services {
-        export const express: ExpressService = new ExpressService();
+        export const expressService: ExpressService = new ExpressService();
     }
 }
 
