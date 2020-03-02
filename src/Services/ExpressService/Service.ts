@@ -12,6 +12,7 @@ export default class Service implements IService {
     public keyFile = "./Cert/Privatekey.pem"
     public certFile = "./Cert/Certificate.crt"
     public staticFolder = "../../../public"
+    public routesFolder = "./Routes"
 
     /**
      * 初始化服务
@@ -19,6 +20,7 @@ export default class Service implements IService {
     public async initialize() {
 
         this.initializeStatic();
+        this.initializeRoutes();
         this.initializeHttp();
 
         // 访问路径
@@ -60,4 +62,62 @@ export default class Service implements IService {
         console.log("静态资源目录为:", Path.resolve(__dirname, this.staticFolder))
         this.express.use(Express.static(Path.resolve(__dirname, this.staticFolder)))
     }
+
+    /**
+      * 初始化路由
+      */
+    public async   initializeRoutes() {
+        console.log("路由目录为:", Path.resolve(__dirname, this.routesFolder))
+        const scanResult = this.scanDirModules(Path.resolve(__dirname, this.routesFolder));
+        for (const prefix in scanResult) {
+            if (scanResult.hasOwnProperty(prefix)) {
+                console.log("自动加载路由:", prefix);
+                this.express.use(prefix, scanResult[prefix])
+            }
+        }
+    }
+
+    /**
+     * 文件路径转路由路径
+     * @param filename 
+     */
+    private transform(filename: string) {
+        return filename.slice(0, filename.lastIndexOf('.'))
+            // 分隔符转换
+            .replace(/\\/g, '/')
+            // index去除
+            .replace('/index', '/')
+            // 路径头部/修正
+            .replace(/^[/]*/, '/')
+            // 路径尾部/去除
+            .replace(/[/]*$/, '')
+    }
+
+    /**
+     * 扫描文件夹下的代码
+     * @param rootDir 
+     */
+    private scanDirModules(rootDir: string) {
+        // 模块集合
+        const modules: { [key: string]: any } = {}
+        // 获取目录下的第一级子文件为路由文件队列
+        let filenames = Fs.readdirSync(rootDir)
+        while (filenames.length) {
+            // 路由文件相对路径
+            const relativeFilePath = filenames.shift()
+            // 路由文件绝对路径
+            const absFilePath = Path.join(rootDir, relativeFilePath || "");
+            if (Fs.statSync(absFilePath).isDirectory()) {
+                // 是文件夹的情况下，读取子目录文件，添加到路由文件队列中
+                const subFiles = Fs.readdirSync(absFilePath).map(v => Path.join(absFilePath.replace(rootDir, ''), v))
+                filenames = filenames.concat(subFiles)
+            } else {
+                // 是文件的情况下，将文件路径转化为路由前缀，添加路由前缀和路由模块到模块集合中
+                const prefix = this.transform(relativeFilePath || "");
+                modules[prefix] = require(absFilePath).default
+            }
+        }
+        return modules
+    }
+
 }
