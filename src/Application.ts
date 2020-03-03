@@ -1,5 +1,6 @@
 import ExpressService from "./Services/ExpressService/ExpressService"
 import RedisService from "./Services/RedisService/RedisService";
+import MongodbService from "./Services/MongodbService/MongodbService";
 
 class Application {
 
@@ -9,14 +10,28 @@ class Application {
     }
 
     private static async  initialize() {
-        await Application.Services.redisService.initialize();
-        await Application.Services.expressService.initialize();
+        try {
+            await Application.Services.redisService.initialize();
+        } catch (error) {
+            console.error(error)
+        }
+        try {
+            await Application.Services.mongodbService.initialize();
+        } catch (error) {
+            console.error(error)
+        }
+        try {
+            await Application.Services.expressService.initialize();
+        } catch (error) {
+            console.error(error)
+        }
     }
 }
 
 namespace Application {
     export namespace Services {
         export const redisService: RedisService = new RedisService();
+        export const mongodbService: MongodbService = new MongodbService();
         export const expressService: ExpressService = new ExpressService();
     }
 }

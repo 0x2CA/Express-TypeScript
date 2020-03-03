@@ -5,9 +5,11 @@
     "main": "Application.ts",
     "dependencies": {
         "@types/express": "^4.17.2",
+        "@types/mongodb": "^3.5.0",
         "@types/node": "^13.7.7",
         "@types/redis": "^2.8.16",
         "express": "^4.17.1",
+        "mongodb": "^3.5.4",
         "redis": "^3.0.2"
     },
     "devDependencies": {},
