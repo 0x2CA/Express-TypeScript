@@ -8,5 +8,8 @@ export default class RedisService implements IService {
 
     async  initialize() {
         this.client = Redis.createClient(this.prot, this.address)
+        this.client.on("error", (...args) => {
+            console.error("Redis出错!", ...args);
+        })
     }
 }
